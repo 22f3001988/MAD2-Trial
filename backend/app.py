@@ -6,12 +6,18 @@ app = Flask(__name__)
 api = Api(app)
 CORS(app)
 
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+from models import db
+db.init_app(app)
 
 class HelloWorld(Resource):
     def get(self):
-        return {"message": "value"}
+        return {"message": "Hello world!"}
     
-api.add_resource(HelloWorld, '/')
+api.add_resource(HelloWorld, '/message')
 
 if __name__ == "__main__":
+    with app.app_context():
+        db.create_all()
+        
     app.run(debug=True)
